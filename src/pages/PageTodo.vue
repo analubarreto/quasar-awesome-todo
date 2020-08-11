@@ -1,6 +1,11 @@
 <template>
   <q-page class="q-pa-md">
-    <tasks-todo :tasksTodo="tasksTodo" />
+    <tasks-todo
+      :tasksTodo="tasksTodo"
+      v-if="!isEmpty(tasksTodo)"
+    />
+    <no-tasks v-else>You have no tasks todo</no-tasks>
+
     <tasks-completed :tasksCompleted="tasksCompleted" />
 
     <div class="absolute-bottom text-center q-mb-lg">
@@ -31,11 +36,22 @@ export default {
   computed: {
     ...mapGetters("tasks", ["tasksTodo", "tasksCompleted"]),
   },
+  mounted () {
+    this.$root.$on('showAddTask', () => {
+      this.showAddTask = true
+    })
+  },
   components: {
     task: require("components/Tasks/Task.vue").default,
     "add-task": require("components/Tasks/Modals/AddTask.vue").default,
     "tasks-todo": require("components/Tasks/TasksTodo.vue").default,
     "tasks-completed": require("components/Tasks/TasksCompleted.vue").default,
+    "no-tasks": require("components/Tasks/NoTasks.vue").default,
+  },
+  methods: {
+    isEmpty (obj) {
+      return Object.keys(obj).length === 0
+    }
   },
 };
 </script>

@@ -12,6 +12,7 @@
     <slot />
     <template v-slot:action>
       <q-btn
+        @click="$root.$emit('showAddTask')"
         flat
         color="primary"
         label="Add Task"
@@ -19,3 +20,9 @@
     </template>
   </q-banner>
 </template>
+
+<script>
+export default {
+
+}
+</script>
