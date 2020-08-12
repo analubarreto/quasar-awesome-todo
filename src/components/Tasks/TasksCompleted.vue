@@ -15,12 +15,6 @@
         ></task>
       </q-list>
     </div>
-    <div
-      v-else
-      class="text-center"
-    >
-      <p class="text-body-1">You haven't completed any tasks today</p>
-    </div>
   </div>
 </template>
 
