@@ -27,7 +27,7 @@ export default {
       get () {
         return this.searchBar
       },
-      set () {
+      set (value) {
         this.setSearch(value)
       }
     }

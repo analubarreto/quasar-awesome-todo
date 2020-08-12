@@ -1,11 +1,14 @@
 <template>
   <q-page class="q-pa-md">
     <search class="q-mb-lg" />
+
+    <p v-if="searchBar && isEmpty(tasksTodo) && isEmpty(tasksCompleted)">No search results.</p>
+
     <tasks-todo
-      :tasksTodo="tasksTodo"
       v-if="!isEmpty(tasksTodo)"
+      :tasksTodo="tasksTodo"
     />
-    <no-tasks v-else>You have no tasks todo</no-tasks>
+    <no-tasks v-if="isEmpty(tasksTodo) && !searchBar">You have no tasks todo</no-tasks>
 
     <tasks-completed :tasksCompleted="tasksCompleted" />
 
@@ -26,7 +29,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 export default {
   data () {
@@ -36,6 +39,7 @@ export default {
   },
   computed: {
     ...mapGetters("tasks", ["tasksTodo", "tasksCompleted"]),
+    ...mapState("tasks", ["searchBar"])
   },
   mounted () {
     this.$root.$on('showAddTask', () => {
@@ -53,7 +57,7 @@ export default {
   methods: {
     isEmpty (obj) {
       return Object.keys(obj).length === 0
-    }
+    },
   },
 };
 </script>
