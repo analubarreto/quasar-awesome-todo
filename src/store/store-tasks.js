@@ -72,11 +72,31 @@ const actions = {
 }
 
 const getters = {
-  tasksFiltered: (state) => {
-    let tasksFiltered = {}
+  tasksSorted: (state) => {
+    let tasksSorted = {},
+      keysOrdered = Object.keys(state.tasks)
+    // a and b are the two tasks being compared
+    keysOrdered.sort((a, b) => {
+      // lower case letters are considered greater than upper case letters
+      let taskAProp = state.tasks[a].name.toLowerCase(),
+        taskBProp = state.tasks[b].name.toLowerCase()
+
+      if (taskAProp > taskBProp) return 1
+      else if (taskAProp < taskBProp) return -1
+      else return 0
+    })
+
+    keysOrdered.forEach((key) => {
+      tasksSorted[key] = state.tasks[key]
+    })
+    return tasksSorted
+  },
+  tasksFiltered: (state, getters) => {
+    let tasksSorted = getters.tasksSorted,
+      tasksFiltered = {}
     if (state.searchBar) {
-      Object.keys(state.tasks).forEach(key => {
-        let task = state.tasks[key]
+      Object.keys(tasksSorted).forEach(key => {
+        let task = tasksSorted[key]
         let taskNameLowerCase = task.name.toLowerCase()
         let searchLowerCase = state.searchBar.toLowerCase()
 
@@ -86,7 +106,7 @@ const getters = {
       });
       return tasksFiltered
     }
-    return state.tasks
+    return tasksSorted
   },
   tasksTodo: (state, getters) => {
     let tasksFiltered = getters.tasksFiltered
