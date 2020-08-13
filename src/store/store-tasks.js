@@ -25,7 +25,8 @@ const state = {
       dueTime: '16:00'
     }
   },
-  searchBar: ''
+  searchBar: '',
+  sort: 'name'
 }
 
 const mutations = {
@@ -40,6 +41,9 @@ const mutations = {
   },
   setSearchBar(state, value) {
     state.searchBar = value
+  },
+  setSort(state, value) {
+    state.sort = value
   }
 }
 
@@ -68,6 +72,11 @@ const actions = {
     commit
   }, value) {
     commit('setSearchBar', value)
+  },
+  setSort({
+    commit
+  }, value) {
+    commit('setSort', value)
   }
 }
 
@@ -78,8 +87,8 @@ const getters = {
     // a and b are the two tasks being compared
     keysOrdered.sort((a, b) => {
       // lower case letters are considered greater than upper case letters
-      let taskAProp = state.tasks[a].name.toLowerCase(),
-        taskBProp = state.tasks[b].name.toLowerCase()
+      let taskAProp = state.tasks[a][state.sort].toLowerCase(),
+        taskBProp = state.tasks[b][state.sort].toLowerCase()
 
       if (taskAProp > taskBProp) return 1
       else if (taskAProp < taskBProp) return -1

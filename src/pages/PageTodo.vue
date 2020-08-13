@@ -1,6 +1,9 @@
 <template>
   <q-page class="q-pa-md">
-    <search class="q-mb-lg" />
+    <div class="row q-mb-lg">
+      <search class="col" />
+      <sort class="col q-ml-sm" />
+    </div>
 
     <p v-if="searchBar && isEmpty(tasksTodo) && isEmpty(tasksCompleted)">No search results.</p>
 
@@ -53,6 +56,7 @@ export default {
     "tasks-completed": require("components/Tasks/TasksCompleted.vue").default,
     "no-tasks": require("components/Tasks/NoTasks.vue").default,
     "search": require("components/Tasks/Tools/Search.vue").default,
+    "sort": require("components/Tasks/Tools/Sort.vue").default,
   },
   methods: {
     isEmpty (obj) {
@@ -63,4 +67,7 @@ export default {
 </script>
 
 <style>
+.q-select {
+  flex: 0 0 200px;
+}
 </style>
