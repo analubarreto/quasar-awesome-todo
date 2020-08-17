@@ -1,28 +1,44 @@
 <template>
-  <q-page class="q-pa-md">
-    <div class="row q-mb-lg">
-      <search class="col" />
-      <sort class="col q-ml-sm" />
-    </div>
+  <q-page>
+    <div class="q-pa-md absolute full-width full-height column">
+      <search />
+      <sort class="q-mb-md" />
 
-    <p v-if="searchBar && isEmpty(tasksTodo) && isEmpty(tasksCompleted)">No search results.</p>
+      <p
+        v-if="
+          search &&
+            !Object.keys(tasksTodo).length &&
+            !Object.keys(tasksCompleted).length
+        "
+      >
+        No search results.
+      </p>
 
-    <tasks-todo
-      v-if="!isEmpty(tasksTodo)"
-      :tasksTodo="tasksTodo"
-    />
-    <no-tasks v-if="isEmpty(tasksTodo) && !searchBar">You have no tasks todo</no-tasks>
+      <q-scroll-area class="q-scroll-area-tasks">
+        <no-tasks v-if="!Object.keys(tasksTodo).length && !search"></no-tasks>
 
-    <tasks-completed :tasksCompleted="tasksCompleted" />
+        <tasks-todo
+          v-if="Object.keys(tasksTodo).length"
+          :tasksTodo="tasksTodo"
+        />
 
-    <div class="absolute-bottom text-center q-mb-lg">
-      <q-btn
-        @click="showAddTask = true"
-        round
-        color="primary"
-        size="24px"
-        icon="add"
-      />
+        <tasks-completed
+          v-if="Object.keys(tasksCompleted).length"
+          :tasksCompleted="tasksCompleted"
+          class="q-mb-xl"
+        />
+      </q-scroll-area>
+
+      <div class="absolute-bottom text-center q-mb-lg no-pointer-events">
+        <q-btn
+          @click="showAddTask = true"
+          round
+          class="all-pointer-events"
+          color="primary"
+          size="24px"
+          icon="add"
+        />
+      </div>
     </div>
 
     <q-dialog v-model="showAddTask">
@@ -35,19 +51,19 @@
 import { mapGetters, mapState } from "vuex";
 
 export default {
-  data () {
+  data() {
     return {
-      showAddTask: false,
+      showAddTask: false
     };
   },
   computed: {
     ...mapGetters("tasks", ["tasksTodo", "tasksCompleted"]),
-    ...mapState("tasks", ["searchBar"])
+    ...mapState("tasks", ["search"])
   },
-  mounted () {
-    this.$root.$on('showAddTask', () => {
-      this.showAddTask = true
-    })
+  mounted() {
+    this.$root.$on("showAddTask", () => {
+      this.showAddTask = true;
+    });
   },
   components: {
     task: require("components/Tasks/Task.vue").default,
@@ -55,19 +71,20 @@ export default {
     "tasks-todo": require("components/Tasks/TasksTodo.vue").default,
     "tasks-completed": require("components/Tasks/TasksCompleted.vue").default,
     "no-tasks": require("components/Tasks/NoTasks.vue").default,
-    "search": require("components/Tasks/Tools/Search.vue").default,
-    "sort": require("components/Tasks/Tools/Sort.vue").default,
+    search: require("components/Tasks/Tools/Search.vue").default,
+    sort: require("components/Tasks/Tools/Sort.vue").default
   },
   methods: {
-    isEmpty (obj) {
-      return Object.keys(obj).length === 0
-    },
-  },
+    isEmpty(obj) {
+      return Object.keys(obj).length === 0;
+    }
+  }
 };
 </script>
 
 <style>
-.q-select {
-  flex: 0 0 200px;
+.q-scroll-area-tasks {
+  display: flex;
+  flex-grow: 1;
 }
 </style>

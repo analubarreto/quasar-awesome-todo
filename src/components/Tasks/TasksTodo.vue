@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <transition
+    appear
+    enter-active-class="animated zoomIn"
+    leave-active-class="animated zoomOut absolute-top"
+  >
     <div>
       <list-header bgColor="bg-orange-4">Todo</list-header>
-      <q-list
-        v-if="Object.keys(tasksTodo).length"
-        separator
-        bordered
-      >
+      <q-list v-if="Object.keys(tasksTodo).length" separator bordered>
         <task
           v-for="(task, key) in tasksTodo"
           :key="key"
@@ -15,7 +15,7 @@
         ></task>
       </q-list>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -23,7 +23,7 @@ export default {
   props: ["tasksTodo"],
   components: {
     task: require("components/Tasks/Task.vue").default,
-    "list-header": require("components/Tasks/Shared/ListHeader.vue").default,
-  },
+    "list-header": require("components/Tasks/Shared/ListHeader.vue").default
+  }
 };
 </script>
