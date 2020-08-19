@@ -4,18 +4,16 @@
       <search />
       <sort class="q-mb-md" />
 
-      <p
-        v-if="
+      <p v-if="
           search &&
             !Object.keys(tasksTodo).length &&
             !Object.keys(tasksCompleted).length
-        "
-      >
+        ">
         No search results.
       </p>
 
       <q-scroll-area class="q-scroll-area-tasks">
-        <no-tasks v-if="!Object.keys(tasksTodo).length && !search"></no-tasks>
+        <no-tasks v-if="!Object.keys(tasksTodo).length && !search && !settings.showTasksInOneList"></no-tasks>
 
         <tasks-todo
           v-if="Object.keys(tasksTodo).length"
@@ -51,16 +49,17 @@
 import { mapGetters, mapState } from "vuex";
 
 export default {
-  data() {
+  data () {
     return {
       showAddTask: false
     };
   },
   computed: {
     ...mapGetters("tasks", ["tasksTodo", "tasksCompleted"]),
+    ...mapGetters("settings", ["settings"]),
     ...mapState("tasks", ["search"])
   },
-  mounted() {
+  mounted () {
     this.$root.$on("showAddTask", () => {
       this.showAddTask = true;
     });
@@ -75,7 +74,7 @@ export default {
     sort: require("components/Tasks/Tools/Sort.vue").default
   },
   methods: {
-    isEmpty(obj) {
+    isEmpty (obj) {
       return Object.keys(obj).length === 0;
     }
   }
