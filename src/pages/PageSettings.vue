@@ -1,14 +1,23 @@
 <template>
   <q-page padding>
-    <q-list bordered padding>
+    <q-list
+      bordered
+      padding
+    >
       <q-item-label header>Notifications</q-item-label>
 
-      <q-item tag="label" v-ripple>
+      <q-item
+        tag="label"
+        v-ripple
+      >
         <q-item-section>
           <q-item-label>Show 12 hout time format</q-item-label>
         </q-item-section>
         <q-item-section side>
-          <q-toggle color="blue" v-model="show12HourTimeFormat" />
+          <q-toggle
+            color="blue"
+            v-model="show12HourTimeFormat"
+          />
         </q-item-section>
       </q-item>
     </q-list>
@@ -16,14 +25,22 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   computed: {
     ...mapGetters("settings", ["settings"]),
-    show12HourTimeFormat() {
-      return this.settings.shshow12HourTimeFormat;
+    show12HourTimeFormat: {
+      get () {
+        return this.settings.shshow12HourTimeFormat;
+      },
+      set (value) {
+        this.setShow12HourTimeFormat(value)
+      }
     }
+  },
+  methods: {
+    ...mapActions("settings", ["setShow12HourTimeFormat"])
   }
 };
 </script>
