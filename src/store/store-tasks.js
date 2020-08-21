@@ -1,27 +1,28 @@
 /* eslint-disable space-before-function-paren */
 import Vue from "vue";
 import { uid } from "quasar";
+import { firebaseDb, firebaseAuth } from "boot/firebase";
 
 const state = {
   tasks: {
-    ID1: {
-      name: "Go to shop",
-      completed: false,
-      dueDate: "2019/05/12",
-      dueTime: "18:30"
-    },
-    ID2: {
-      name: "Get bananas",
-      completed: false,
-      dueDate: "2019/05/13",
-      dueTime: "14:00"
-    },
-    ID3: {
-      name: "Get apples",
-      completed: false,
-      dueDate: "2019/05/14",
-      dueTime: "16:00"
-    }
+    // ID1: {
+    //   name: "Go to shop",
+    //   completed: false,
+    //   dueDate: "2019/05/12",
+    //   dueTime: "18:30"
+    // },
+    // ID2: {
+    //   name: "Get bananas",
+    //   completed: false,
+    //   dueDate: "2019/05/13",
+    //   dueTime: "14:00"
+    // },
+    // ID3: {
+    //   name: "Get apples",
+    //   completed: false,
+    //   dueDate: "2019/05/14",
+    //   dueTime: "16:00"
+    // }
   },
   search: "",
   sort: "name"
@@ -65,6 +66,16 @@ const actions = {
   },
   setSort({ commit }, value) {
     commit("setSort", value);
+  },
+  fbReadData({ commit }) {
+    console.log("start reading data from firebase");
+    const userId = firebaseAuth.currentUser.uid;
+    const userTasks = firebaseDb.ref(`tasks/${userId}`);
+
+    // child added hook
+    userTasks.on("child_added", snapshot => {
+      console.log(`snapshot: ${snapshot}`);
+    });
   }
 };
 
