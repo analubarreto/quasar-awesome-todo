@@ -7,11 +7,21 @@
           Awesome Todo
         </q-toolbar-title>
         <q-btn
+          v-if="!loggedIn"
           to="/auth"
           flat
           color="white"
           icon-right="account_circle"
           label="Login"
+          class="absolute-right"
+        />
+        <q-btn
+          @click="logoutUser"
+          v-else
+          flat
+          color="white"
+          icon-right="account_circle"
+          label="Logout"
           class="absolute-right"
         />
       </q-toolbar>
@@ -65,7 +75,8 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
+import { openURL } from 'quasar';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'MyLayout',
@@ -86,7 +97,11 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapState("auth", ["loggedIn"])
+  },
   methods: {
+    ...mapActions("auth", ["logoutUser"]),
     openURL
   }
 }
