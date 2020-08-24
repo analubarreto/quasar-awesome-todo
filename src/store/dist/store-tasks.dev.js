@@ -13,7 +13,8 @@ var _firebase = require("boot/firebase");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-/* eslint-disable space-before-function-paren */
+function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
+
 var state = {
   tasks: {// ID1: {
     //   name: "Go to shop",
@@ -56,21 +57,21 @@ var mutations = {
 };
 var actions = {
   updateTask: function updateTask(_ref, payload) {
-    var commit = _ref.commit;
-    commit("updateTask", payload);
+    var dispatch = _ref.dispatch;
+    dispatch("fbUpdateTask", payload);
   },
   deleteTask: function deleteTask(_ref2, id) {
-    var commit = _ref2.commit;
-    commit("deleteTask", id);
+    var dispatch = _ref2.dispatch;
+    dispatch("fbDeleteTask", id);
   },
   addTask: function addTask(_ref3, task) {
-    var commit = _ref3.commit;
+    var dispatch = _ref3.dispatch;
     var taskId = (0, _quasar.uid)();
     var payload = {
       id: taskId,
       task: task
     };
-    commit("addTask", payload);
+    dispatch("fbAddTask", payload);
   },
   setSearch: function setSearch(_ref4, value) {
     var commit = _ref4.commit;
@@ -112,6 +113,34 @@ var actions = {
       var taskId = snapshot.key;
       commit("deleteTask", taskId);
     });
+  },
+  fbAddTask: function fbAddTask(_ref7, payload) {
+    _objectDestructuringEmpty(_ref7);
+
+    console.log("fbAddTask payload:" + payload);
+    var userId = _firebase.firebaseAuth.currentUser.uid;
+
+    var taskRef = _firebase.firebaseDb.ref("tasks/ ".concat(userId, "/").concat(payload.id));
+
+    taskRef.set(payload.task);
+  },
+  fbUpdateTask: function fbUpdateTask(_ref8, payload) {
+    _objectDestructuringEmpty(_ref8);
+
+    var userId = _firebase.firebaseAuth.currentUser.uid;
+
+    var taskRef = _firebase.firebaseDb.ref("tasks/ ".concat(userId, "/").concat(payload.id));
+
+    taskRef.update(payload.update);
+  },
+  fbDeleteTask: function fbDeleteTask(_ref9, taskId) {
+    _objectDestructuringEmpty(_ref9);
+
+    var userId = _firebase.firebaseAuth.currentUser.uid;
+
+    var taskRef = _firebase.firebaseDb.ref("tasks/ ".concat(userId, "/").concat(taskId));
+
+    taskRef.remove();
   }
 };
 var getters = {
