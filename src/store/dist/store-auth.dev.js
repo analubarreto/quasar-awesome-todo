@@ -67,6 +67,9 @@ var actions = {
           root: true
         });
       } else {
+        commit("tasks/setTasksDownloaded", false, {
+          root: true
+        });
         commit("setLoggedIn", false);
 
         _quasar.LocalStorage.set("loggedIn", false);

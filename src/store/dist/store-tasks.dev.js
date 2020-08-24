@@ -36,7 +36,8 @@ var state = {
     // }
   },
   search: "",
-  sort: "name"
+  sort: "name",
+  tasksDownloaded: false
 };
 var mutations = {
   updateTask: function updateTask(state, payload) {
@@ -53,6 +54,9 @@ var mutations = {
   },
   setSort: function setSort(state, value) {
     state.sort = value;
+  },
+  setTasksDownloaded: function setTasksDownloaded(state, value) {
+    state.tasksDownloaded = value;
   }
 };
 var actions = {
@@ -83,11 +87,14 @@ var actions = {
   },
   fbReadData: function fbReadData(_ref6) {
     var commit = _ref6.commit;
-    console.log("start reading data from firebase");
     var userId = _firebase.firebaseAuth.currentUser.uid;
 
-    var userTasks = _firebase.firebaseDb.ref("tasks/ ".concat(userId)); // child added hook
+    var userTasks = _firebase.firebaseDb.ref("tasks/ ".concat(userId)); // Initial check for data
 
+
+    userTasks.once("value", function (snapshot) {
+      commit("setTasksDownloaded", true);
+    }); // child added hook
 
     userTasks.on("child_added", function (snapshot) {
       console.log(snapshot);
@@ -100,7 +107,6 @@ var actions = {
     }); //child changed
 
     userTasks.on("child_changed", function (snapshot) {
-      console.log(snapshot);
       var task = snapshot.val();
       var payload = {
         id: snapshot.key,
@@ -117,7 +123,6 @@ var actions = {
   fbAddTask: function fbAddTask(_ref7, payload) {
     _objectDestructuringEmpty(_ref7);
 
-    console.log("fbAddTask payload:" + payload);
     var userId = _firebase.firebaseAuth.currentUser.uid;
 
     var taskRef = _firebase.firebaseDb.ref("tasks/ ".concat(userId, "/").concat(payload.id));
@@ -131,7 +136,7 @@ var actions = {
 
     var taskRef = _firebase.firebaseDb.ref("tasks/ ".concat(userId, "/").concat(payload.id));
 
-    taskRef.update(payload.update);
+    taskRef.update(payload.updates);
   },
   fbDeleteTask: function fbDeleteTask(_ref9, taskId) {
     _objectDestructuringEmpty(_ref9);

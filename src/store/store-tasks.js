@@ -25,7 +25,8 @@ const state = {
     // }
   },
   search: "",
-  sort: "name"
+  sort: "name",
+  tasksDownloaded: false
 };
 
 const mutations = {
@@ -43,6 +44,9 @@ const mutations = {
   },
   setSort(state, value) {
     state.sort = value;
+  },
+  setTasksDownloaded(state, value) {
+    state.tasksDownloaded = value;
   }
 };
 
@@ -68,9 +72,13 @@ const actions = {
     commit("setSort", value);
   },
   fbReadData({ commit }) {
-    console.log("start reading data from firebase");
     const userId = firebaseAuth.currentUser.uid;
     const userTasks = firebaseDb.ref(`tasks/ ${userId}`);
+
+    // Initial check for data
+    userTasks.once("value", snapshot => {
+      commit("setTasksDownloaded", true);
+    });
 
     // child added hook
     userTasks.on("child_added", snapshot => {
@@ -87,7 +95,6 @@ const actions = {
 
     //child changed
     userTasks.on("child_changed", snapshot => {
-      console.log(snapshot);
       const task = snapshot.val();
 
       const payload = {
@@ -107,7 +114,6 @@ const actions = {
   },
 
   fbAddTask({}, payload) {
-    console.log("fbAddTask payload:" + payload);
     const userId = firebaseAuth.currentUser.uid;
     const taskRef = firebaseDb.ref(`tasks/ ${userId}/${payload.id}`);
     taskRef.set(payload.task);
@@ -116,7 +122,7 @@ const actions = {
   fbUpdateTask({}, payload) {
     const userId = firebaseAuth.currentUser.uid;
     const taskRef = firebaseDb.ref(`tasks/ ${userId}/${payload.id}`);
-    taskRef.update(payload.update);
+    taskRef.update(payload.updates);
   },
 
   fbDeleteTask({}, taskId) {
