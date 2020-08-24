@@ -70,11 +70,39 @@ const actions = {
   fbReadData({ commit }) {
     console.log("start reading data from firebase");
     const userId = firebaseAuth.currentUser.uid;
-    const userTasks = firebaseDb.ref(`tasks/${userId}`);
+    const userTasks = firebaseDb.ref(`tasks/ ${userId}`);
 
     // child added hook
     userTasks.on("child_added", snapshot => {
-      console.log(`snapshot: ${snapshot}`);
+      console.log(snapshot);
+      const task = snapshot.val();
+
+      const payload = {
+        id: snapshot.key,
+        task: task
+      };
+
+      commit("addTask", payload);
+    });
+
+    //child changed
+    userTasks.on("child_changed", snapshot => {
+      console.log(snapshot);
+      const task = snapshot.val();
+
+      const payload = {
+        id: snapshot.key,
+        updates: task
+      };
+
+      commit("updateTask", payload);
+    });
+
+    // child removed
+    userTasks.on("child_removed", snapshot => {
+      const taskId = snapshot.key;
+
+      commit("deleteTask", taskId);
     });
   }
 };

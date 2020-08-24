@@ -13,7 +13,7 @@
       </p>
 
       <q-scroll-area class="q-scroll-area-tasks">
-        <no-tasks v-if="!Object.keys(tasksTodo).length && !search && !settings.showTasksInOneList"></no-tasks>
+        <no-tasks v-if="!Object.keys(tasksTodo).length && !search && !settings.showTasksInOneList">You have no tasks yet, want to add some?</no-tasks>
 
         <tasks-todo
           v-if="Object.keys(tasksTodo).length"

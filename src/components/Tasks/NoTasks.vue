@@ -4,9 +4,15 @@
     enter-active-class="animated zoomIn"
     leave-active-class="animated zoomOut absolute-top"
   >
-    <q-banner rounded class="bg-grey-3">
+    <q-banner
+      rounded
+      class="bg-grey-3"
+    >
       <template v-slot:avatar>
-        <q-icon name="check" color="primary" />
+        <q-icon
+          name="check"
+          color="primary"
+        />
       </template>
       <slot />
       <template v-slot:action>
