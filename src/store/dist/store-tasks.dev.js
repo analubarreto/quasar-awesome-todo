@@ -11,6 +11,8 @@ var _quasar = require("quasar");
 
 var _firebase = require("boot/firebase");
 
+var _functionShowErrorMessage = require("src/functions/function-show-error-message");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
@@ -89,6 +91,8 @@ var actions = {
     commit("setSort", value);
   },
   fbReadData: function fbReadData(_ref6) {
+    var _this = this;
+
     var commit = _ref6.commit;
     var userId = _firebase.firebaseAuth.currentUser.uid;
 
@@ -97,10 +101,13 @@ var actions = {
 
     userTasks.once("value", function (snapshot) {
       commit("setTasksDownloaded", true);
+    }, function (error) {
+      (0, _functionShowErrorMessage.showErrorMessage)(error.message);
+
+      _this.$router.replace("/auth");
     }); // child added hook
 
     userTasks.on("child_added", function (snapshot) {
-      console.log(snapshot);
       var task = snapshot.val();
       var payload = {
         id: snapshot.key,
@@ -130,7 +137,13 @@ var actions = {
 
     var taskRef = _firebase.firebaseDb.ref("tasks/ ".concat(userId, "/").concat(payload.id));
 
-    taskRef.set(payload.task);
+    taskRef.set(payload.task, function (error) {
+      if (error) {
+        (0, _functionShowErrorMessage.showErrorMessage)(error.message);
+      } else {
+        _quasar.Notify.create("Task added");
+      }
+    });
   },
   fbUpdateTask: function fbUpdateTask(_ref8, payload) {
     _objectDestructuringEmpty(_ref8);
@@ -139,7 +152,17 @@ var actions = {
 
     var taskRef = _firebase.firebaseDb.ref("tasks/ ".concat(userId, "/").concat(payload.id));
 
-    taskRef.update(payload.updates);
+    taskRef.update(payload.updates, function (error) {
+      if (error) {
+        (0, _functionShowErrorMessage.showErrorMessage)(error.message);
+      } else {
+        var keys = Object.keys(payload.updates);
+
+        if (!(keys.includes("completed") && keys.length == 1)) {
+          _quasar.Notify.create("Task updated");
+        }
+      }
+    });
   },
   fbDeleteTask: function fbDeleteTask(_ref9, taskId) {
     _objectDestructuringEmpty(_ref9);
@@ -148,7 +171,13 @@ var actions = {
 
     var taskRef = _firebase.firebaseDb.ref("tasks/ ".concat(userId, "/").concat(taskId));
 
-    taskRef.remove();
+    taskRef.remove(function (error) {
+      if (error) {
+        (0, _functionShowErrorMessage.showErrorMessage)(error.message);
+      } else {
+        _quasar.Notify.create("Task deleted");
+      }
+    });
   }
 };
 var getters = {

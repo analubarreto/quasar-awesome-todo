@@ -39,7 +39,7 @@ module.exports = function(/* ctx */) {
         }
       },
       importStrategy: "auto",
-      plugins: ["Dialog", "LocalStorage", "SessionStorage", "Loading"]
+      plugins: ["Dialog", "LocalStorage", "SessionStorage", "Loading", "Notify"]
     },
 
     // animations: 'all', // --- includes all animations
