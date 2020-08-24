@@ -39,6 +39,9 @@ const mutations = {
   addTask(state, payload) {
     Vue.set(state.tasks, payload.id, payload.task);
   },
+  clearTasks(state) {
+    state.tasks = {};
+  },
   setsearch(state, value) {
     state.search = value;
   },

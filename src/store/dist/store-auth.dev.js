@@ -67,6 +67,9 @@ var actions = {
           root: true
         });
       } else {
+        commit("tasks/clearTasks", null, {
+          root: true
+        });
         commit("tasks/setTasksDownloaded", false, {
           root: true
         });
